@@ -1,0 +1,46 @@
+use Propagator;
+
+/**
+\color #fff
+\symbol Sr
+\symmetries normal
+*/
+
+element Source : Propagate
+{
+    ARGB baseCol;
+
+    Void initSelf()
+    {
+        ip = 0; //placing a seed starts out as a well
+        Random rd;
+        ColorValue r = (ColorValue)rd.between(30, 256);
+        ColorValue g = (ColorValue)rd.between(30, 256);
+        ColorValue b = (ColorValue)rd.between(30, 256);
+        baseCol[1] = r;
+        baseCol[2] = g;
+        baseCol[3] = b;
+    }
+
+    Void emptySpace(Neighbour i)
+    {
+        Propagator p;
+        p.baseCol = baseCol;
+        if(i < 5)
+            p.ip = 2;
+        else
+            p.ip = 3;
+        ew[i] = (Atom)p;
+    }
+
+    Void captureSpace(Neighbour i)
+    {
+        Propagator p;
+        p.baseCol = baseCol;
+        if(i < 5)
+            p.ip = 2;
+        else
+            p.ip = 3;
+        ew[i] = (Atom)p;
+    }
+}

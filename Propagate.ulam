@@ -1,0 +1,52 @@
+
+quark Propagate
+{
+    typedef Unsigned(8) ARGB[4];
+    typedef Unsigned(8) ColorValue;
+    typedef Unsigned(8) InvPressure;
+    typedef Unsigned(5) Neighbour;
+
+    EventWindow ew;
+    InvPressure ip = 0;
+    Once oc;
+
+    virtual Void initSelf()
+    {
+    }
+
+    virtual Void captureSpace(Neighbour idx)
+    {
+    }
+    
+    virtual Void emptySpace(Neighbour idx)
+    {
+    }
+
+    Void behave()
+    {
+        if(oc.new())
+        {
+            initSelf();
+        }
+
+        for(Neighbour i = 1; i < 9; ++i)
+        {
+            Atom other = ew[i];
+            if(other is Propagate)
+            { 
+                captureSpace(i);
+            }
+
+            if(ew[i] is Empty)
+            {
+                emptySpace(i);
+            }
+        }
+
+        // allows the Voronnoi cells to die when the
+        //  seed is deleted.
+        if(ip < 254)
+            ip++;
+    }
+
+}

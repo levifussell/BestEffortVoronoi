@@ -1,0 +1,58 @@
+/**
+\color #060
+\symbol Pr
+\symmetries normal
+*/
+
+element Propagator : Propagate
+{
+    ARGB baseCol;
+
+    ARGB getColor(Unsigned selector)
+    {
+        ARGB col;
+        ColorValue div = 30;
+        col[1] = (ColorValue)(baseCol[1]*ip/div);
+        col[2] = (ColorValue)(baseCol[2]*ip/div);
+        col[3] = (ColorValue)(baseCol[3]*ip/div);
+        return col;
+    }
+
+    Void emptySpace(Neighbour i)
+    {
+        ew[i] = ew[0];
+        Atom other = ew[i];
+        if(other as Propagator)
+        {
+            if(i < 5)
+                other.ip += 2;
+            else
+                other.ip += 3;
+            ew[i] = other;
+        }
+    }
+
+    Void captureSpace(Neighbour i)
+    {
+        Atom other = ew[i];
+        if(other as Propagator)
+        { 
+            // check for consuming neighbour
+            InvPressure c = 100;
+            // lateralneighbours have more pressure
+            if(i < 5)
+                c = 2;
+            // diagonal neighbours have less pressure
+            //  (approx. 3:2)
+            else
+                c = 3;
+            if(other.ip > ip + c)
+            {
+                other = (Propagator)ew[0];
+                if(other.ip + c < 256)
+                    other.ip += c;
+                ew[i] = other;
+            }
+        }
+    }
+}
